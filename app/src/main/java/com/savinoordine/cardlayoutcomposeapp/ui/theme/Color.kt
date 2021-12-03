@@ -10,7 +10,12 @@ val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 
 private val LightGreen200 = Color(0xFF80C84F)
+private val LightRed00 = Color(0xFFC84F4F)
 
 val Colors.LightGreen: Color
     @Composable
     get() = LightGreen200
+
+val Colors.LightRed: Color
+    @Composable
+    get() = LightRed00

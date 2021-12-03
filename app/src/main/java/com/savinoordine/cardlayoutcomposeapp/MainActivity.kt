@@ -19,8 +19,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.savinoordine.cardlayoutcomposeapp.ui.theme.LightGreen
+import com.savinoordine.cardlayoutcomposeapp.model.UserProfile
+import com.savinoordine.cardlayoutcomposeapp.model.userProfileMocks
 import com.savinoordine.cardlayoutcomposeapp.ui.theme.MyTheme
+import com.savinoordine.cardlayoutcomposeapp.utils.colorForOnlineUser
+import com.savinoordine.cardlayoutcomposeapp.utils.stringStatusForOnlineUser
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,13 +37,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(userProfiles: List<UserProfile> = userProfileMocks) {
     Scaffold(topBar = { AppBar() }) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color.LightGray
         ) {
-            ProfileCard()
+            Column {
+                for (userProfile in userProfiles) {
+                    ProfileCard(userProfile = userProfile)
+                }
+            }
         }
     }
 }
@@ -59,12 +66,12 @@ fun AppBar() {
 }
 
 @Composable
-fun ProfileCard() {
+fun ProfileCard(userProfile: UserProfile) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(align = Alignment.Top)
-            .padding(16.dp),
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 4.dp),
         elevation = 8.dp,
     ) {
         Row(
@@ -72,26 +79,26 @@ fun ProfileCard() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
-            ProfilePicture()
-            ProfileContent()
+            ProfilePicture(userProfile.drawableId, userProfile.status)
+            ProfileContent(userProfile.name, userProfile.status)
         }
     }
 }
 
 @Composable
-fun ProfileContent() {
+fun ProfileContent(name: String, onlineStatus: Boolean) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
-            text = "Savino Taaac",
+            text = name,
             style = MaterialTheme.typography.h5
         )
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
-                text = "Active now",
+                text = onlineStatus.stringStatusForOnlineUser(),
                 style = MaterialTheme.typography.body1
             )
         }
@@ -99,19 +106,19 @@ fun ProfileContent() {
 }
 
 @Composable
-fun ProfilePicture() {
+fun ProfilePicture(drawableId: Int, onlineStatus: Boolean) {
     Card(
         shape = CircleShape,
         border = BorderStroke(
             width = 2.dp,
-            color = MaterialTheme.colors.LightGreen,
+            color = onlineStatus.colorForOnlineUser(),
         ),
         modifier = Modifier
             .padding(16.dp),
         elevation = 6.dp,
     ) {
         Image(
-            painter = painterResource(id = R.drawable.profile_picture),
+            painter = painterResource(id = drawableId),
             contentDescription = "",
             modifier = Modifier.size(72.dp),
             contentScale = ContentScale.Crop,
