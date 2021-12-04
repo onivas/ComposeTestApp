@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,11 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.savinoordine.cardlayoutcomposeapp.model.UserProfile
-import com.savinoordine.cardlayoutcomposeapp.model.userProfileList
+import com.savinoordine.cardlayoutcomposeapp.navigation.UserNavigation
 import com.savinoordine.cardlayoutcomposeapp.ui.theme.MyTheme
 import com.savinoordine.cardlayoutcomposeapp.utils.colorForOnlineUser
 import com.savinoordine.cardlayoutcomposeapp.utils.stringStatusForOnlineUser
@@ -33,14 +36,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyTheme {
-                MainScreen()
+                UserNavigation()
             }
         }
     }
 }
 
 @Composable
-fun MainScreen(userProfiles: List<UserProfile> = userProfileList) {
+fun UserListScreen(userProfiles: List<UserProfile>, navController: NavHostController) {
     Scaffold(topBar = { AppBar() }) {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -48,7 +51,9 @@ fun MainScreen(userProfiles: List<UserProfile> = userProfileList) {
         ) {
             LazyColumn {
                 items(userProfiles) { userProfile ->
-                    ProfileCard(userProfile = userProfile)
+                    ProfileCard(userProfile = userProfile) {
+                        navController.navigate("user_detail")
+                    }
                 }
             }
         }
@@ -69,12 +74,13 @@ fun AppBar() {
 }
 
 @Composable
-fun ProfileCard(userProfile: UserProfile) {
+fun ProfileCard(userProfile: UserProfile, userClicked: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(align = Alignment.Top)
-            .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 4.dp),
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 4.dp)
+            .clickable { userClicked.invoke() },
         elevation = 8.dp,
     ) {
         Row(
@@ -82,7 +88,7 @@ fun ProfileCard(userProfile: UserProfile) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
-            ProfilePicture(userProfile.pictureUrl, userProfile.status)
+            ProfilePicture(userProfile.pictureUrl, userProfile.status, 72.dp)
             ProfileContent(userProfile.name, userProfile.status)
         }
     }
@@ -91,7 +97,7 @@ fun ProfileCard(userProfile: UserProfile) {
 @Composable
 fun ProfileContent(name: String, onlineStatus: Boolean) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.padding(8.dp),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -109,7 +115,7 @@ fun ProfileContent(name: String, onlineStatus: Boolean) {
 }
 
 @Composable
-fun ProfilePicture(pictureUrl: String, onlineStatus: Boolean) {
+fun ProfilePicture(pictureUrl: String, onlineStatus: Boolean, imageSize: Dp) {
     Card(
         shape = CircleShape,
         border = BorderStroke(
@@ -125,7 +131,7 @@ fun ProfilePicture(pictureUrl: String, onlineStatus: Boolean) {
                 builder = { transformations(CircleCropTransformation()) }
             ),
             contentDescription = null,
-            modifier = Modifier.size(72.dp),
+            modifier = Modifier.size(imageSize),
             contentScale = ContentScale.Crop,
         )
     }
@@ -134,8 +140,8 @@ fun ProfilePicture(pictureUrl: String, onlineStatus: Boolean) {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun UserListPreview() {
     MyTheme {
-        MainScreen()
+        UserNavigation()
     }
 }
