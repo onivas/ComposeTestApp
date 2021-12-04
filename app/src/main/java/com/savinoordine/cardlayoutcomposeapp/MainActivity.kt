@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,11 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.savinoordine.cardlayoutcomposeapp.model.UserProfile
-import com.savinoordine.cardlayoutcomposeapp.model.userProfileMocks
+import com.savinoordine.cardlayoutcomposeapp.model.userProfileList
 import com.savinoordine.cardlayoutcomposeapp.ui.theme.MyTheme
 import com.savinoordine.cardlayoutcomposeapp.utils.colorForOnlineUser
 import com.savinoordine.cardlayoutcomposeapp.utils.stringStatusForOnlineUser
@@ -37,14 +40,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(userProfiles: List<UserProfile> = userProfileMocks) {
+fun MainScreen(userProfiles: List<UserProfile> = userProfileList) {
     Scaffold(topBar = { AppBar() }) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color.LightGray
         ) {
-            Column {
-                for (userProfile in userProfiles) {
+            LazyColumn {
+                items(userProfiles) { userProfile ->
                     ProfileCard(userProfile = userProfile)
                 }
             }
@@ -79,7 +82,7 @@ fun ProfileCard(userProfile: UserProfile) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
-            ProfilePicture(userProfile.drawableId, userProfile.status)
+            ProfilePicture(userProfile.pictureUrl, userProfile.status)
             ProfileContent(userProfile.name, userProfile.status)
         }
     }
@@ -106,7 +109,7 @@ fun ProfileContent(name: String, onlineStatus: Boolean) {
 }
 
 @Composable
-fun ProfilePicture(drawableId: Int, onlineStatus: Boolean) {
+fun ProfilePicture(pictureUrl: String, onlineStatus: Boolean) {
     Card(
         shape = CircleShape,
         border = BorderStroke(
@@ -118,8 +121,10 @@ fun ProfilePicture(drawableId: Int, onlineStatus: Boolean) {
         elevation = 6.dp,
     ) {
         Image(
-            painter = painterResource(id = drawableId),
-            contentDescription = "",
+            painter = rememberImagePainter(data = pictureUrl,
+                builder = { transformations(CircleCropTransformation()) }
+            ),
+            contentDescription = null,
             modifier = Modifier.size(72.dp),
             contentScale = ContentScale.Crop,
         )
