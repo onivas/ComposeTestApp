@@ -1,5 +1,6 @@
 package com.savinoordine.cardlayoutcomposeapp
 
+import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -44,7 +46,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun UserListScreen(userProfiles: List<UserProfile>, navController: NavHostController) {
-    Scaffold(topBar = { AppBar() }) {
+    Scaffold(topBar = {
+        AppBar(
+            title = "Users list",
+            icon = Icons.Default.Home
+        ) {}
+    }) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color.LightGray
@@ -61,16 +68,18 @@ fun UserListScreen(userProfiles: List<UserProfile>, navController: NavHostContro
 }
 
 @Composable
-fun AppBar() {
+fun AppBar(title: String, icon: ImageVector, imageClicked: () -> Unit) {
     TopAppBar(
         navigationIcon = {
             Icon(
-                imageVector = Icons.Default.Home,
+                imageVector = icon,
                 contentDescription = "",
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable { imageClicked.invoke() }
             )
         },
-        title = { Text(text = "Application contact") })
+        title = { Text(text = title) })
 }
 
 @Composable

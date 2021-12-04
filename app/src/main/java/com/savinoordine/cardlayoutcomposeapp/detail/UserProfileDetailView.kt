@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.savinoordine.cardlayoutcomposeapp.AppBar
 import com.savinoordine.cardlayoutcomposeapp.ProfileContent
 import com.savinoordine.cardlayoutcomposeapp.ProfilePicture
@@ -18,9 +21,14 @@ import com.savinoordine.cardlayoutcomposeapp.model.userProfileList
 import com.savinoordine.cardlayoutcomposeapp.ui.theme.MyTheme
 
 @Composable
-fun UserDetailScreen(userId: Int) {
+fun UserDetailScreen(userId: Int, navController: NavHostController?) {
     val userProfile = userProfileList.first { it.id == userId }
-    Scaffold(topBar = { AppBar() }) {
+    Scaffold(topBar = {
+        AppBar(
+            title = "User detail",
+            icon = Icons.Default.ArrowBack
+        ) { navController?.navigateUp() }
+    }) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Color.LightGray
@@ -46,6 +54,6 @@ fun UserDetailScreen(userId: Int) {
 @Composable
 fun UserDetailPreview() {
     MyTheme {
-        UserDetailScreen(1)
+        UserDetailScreen(1, null)
     }
 }

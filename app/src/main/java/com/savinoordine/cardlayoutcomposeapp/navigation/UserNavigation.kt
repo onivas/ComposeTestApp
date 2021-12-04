@@ -25,7 +25,7 @@ fun UserNavigation(userProfiles: List<UserProfile> = userProfileList) {
                 type = NavType.IntType
             })
         ) {
-            UserDetailScreen(it.arguments!!.getInt("userId"))
+            UserDetailScreen(it.arguments!!.getInt("userId"), navController)
         }
     }
 }
