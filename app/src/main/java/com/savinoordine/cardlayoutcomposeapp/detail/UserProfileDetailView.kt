@@ -14,12 +14,12 @@ import androidx.compose.ui.unit.dp
 import com.savinoordine.cardlayoutcomposeapp.AppBar
 import com.savinoordine.cardlayoutcomposeapp.ProfileContent
 import com.savinoordine.cardlayoutcomposeapp.ProfilePicture
-import com.savinoordine.cardlayoutcomposeapp.model.UserProfile
 import com.savinoordine.cardlayoutcomposeapp.model.userProfileList
 import com.savinoordine.cardlayoutcomposeapp.ui.theme.MyTheme
 
 @Composable
-fun UserDetailScreen(userProfile: UserProfile = userProfileList.first()) {
+fun UserDetailScreen(userId: Int) {
+    val userProfile = userProfileList.first { it.id == userId }
     Scaffold(topBar = { AppBar() }) {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -46,6 +46,6 @@ fun UserDetailScreen(userProfile: UserProfile = userProfileList.first()) {
 @Composable
 fun UserDetailPreview() {
     MyTheme {
-        UserDetailScreen()
+        UserDetailScreen(1)
     }
 }

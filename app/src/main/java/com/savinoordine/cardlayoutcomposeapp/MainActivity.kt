@@ -52,7 +52,7 @@ fun UserListScreen(userProfiles: List<UserProfile>, navController: NavHostContro
             LazyColumn {
                 items(userProfiles) { userProfile ->
                     ProfileCard(userProfile = userProfile) {
-                        navController.navigate("user_detail")
+                        navController.navigate("user_detail/${userProfile.id}")
                     }
                 }
             }
@@ -74,13 +74,13 @@ fun AppBar() {
 }
 
 @Composable
-fun ProfileCard(userProfile: UserProfile, userClicked: () -> Unit) {
+fun ProfileCard(userProfile: UserProfile, userClicked: (UserProfile) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(align = Alignment.Top)
             .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 4.dp)
-            .clickable { userClicked.invoke() },
+            .clickable { userClicked.invoke(userProfile) },
         elevation = 8.dp,
     ) {
         Row(
